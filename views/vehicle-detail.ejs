@@ -25,10 +25,7 @@
         <div>
           <h1><%= vehicle.year %> <%= vehicle.make %> <%= vehicle.model %></h1>
           <p class="subtitle">
-            <%= vehicle.nickname || "Fleet Vehicle" %>
-            <% if (vehicle.customer) { %>
-              &middot; Owner: <a class="subtle-link" href="/customers/<%= vehicle.customer.id %>"><%= vehicle.customer.firstName %> <%= vehicle.customer.lastName %></a>
-            <% } %>
+            <%= vehicle.nickname || "-" %>
           </p>
         </div>
         <div class="page-actions">
@@ -50,23 +47,25 @@
 
       <div class="vehicle-summary" id="vehicle-summary">
         <div class="vehicle-summary-item">
-          <span class="vehicle-summary-label">Nickname</span>
-          <strong><%= vehicle.nickname || "-" %></strong>
+          <span class="vehicle-summary-label">Vehicle Type</span>
+          <strong><%= vehicle.vehicleType === "Other" ? (vehicle.vehicleTypeOther || "Other") : (vehicle.vehicleType || "Vehicle") %></strong>
         </div>
         <div class="vehicle-summary-item">
-          <span class="vehicle-summary-label">Vehicle Type</span>
+          <span class="vehicle-summary-label">Vehicle Owner</span>
           <strong><%= vehicle.isMyVehicle ? "My Vehicle" : "Customer Vehicle" %></strong>
         </div>
-        <div class="vehicle-summary-item">
-          <span class="vehicle-summary-label">Customer</span>
-          <strong>
-            <% if (vehicle.customer) { %>
-              <a class="subtle-link" href="/customers/<%= vehicle.customer.id %>"><%= vehicle.customer.firstName %> <%= vehicle.customer.lastName %></a>
-            <% } else { %>
-              Unassigned
-            <% } %>
-          </strong>
-        </div>
+        <% if (!vehicle.isMyVehicle) { %>
+          <div class="vehicle-summary-item">
+            <span class="vehicle-summary-label">Customer</span>
+            <strong>
+              <% if (vehicle.customer) { %>
+                <a class="subtle-link" href="/customers/<%= vehicle.customer.id %>"><%= vehicle.customer.firstName %> <%= vehicle.customer.lastName %></a>
+              <% } else { %>
+                Unassigned
+              <% } %>
+            </strong>
+          </div>
+        <% } %>
         <div class="vehicle-summary-item">
           <span class="vehicle-summary-label">Plate</span>
           <strong><%= vehicle.plate || "-" %></strong>
@@ -85,16 +84,40 @@
         </div>
       </div>
 
-      <form class="form-grid" id="vehicle-edit-form" action="/vehicles/<%= vehicle.id %>/update" method="POST" hidden>
-        <label>Nick Name<input name="nickname" value="<%= vehicle.nickname || '' %>" /></label>
+      <form class="form-grid vehicle-edit-grid" id="vehicle-edit-form" action="/vehicles/<%= vehicle.id %>/update" method="POST" hidden>
+        <label>
+          Nickname
+          <input name="nickname" value="<%= vehicle.nickname || '' %>" />
+        </label>
         <label>
           Vehicle Type
-          <select name="isMyVehicle">
+          <select name="vehicleType" id="vehicle-type-edit-select">
+            <option value="Vehicle" <%= vehicle.vehicleType === "Vehicle" ? "selected" : "" %>>Vehicle</option>
+            <option value="ATV" <%= vehicle.vehicleType === "ATV" ? "selected" : "" %>>ATV</option>
+            <option value="SxS" <%= vehicle.vehicleType === "SxS" ? "selected" : "" %>>SxS</option>
+            <option value="Tractor" <%= vehicle.vehicleType === "Tractor" ? "selected" : "" %>>Tractor</option>
+            <option value="Lawn Mower" <%= vehicle.vehicleType === "Lawn Mower" ? "selected" : "" %>>Lawn Mower</option>
+            <option value="Chainsaw" <%= vehicle.vehicleType === "Chainsaw" ? "selected" : "" %>>Chainsaw</option>
+            <option value="Leafblower" <%= vehicle.vehicleType === "Leafblower" ? "selected" : "" %>>Leafblower</option>
+            <option value="Golf Cart" <%= vehicle.vehicleType === "Golf Cart" ? "selected" : "" %>>Golf Cart</option>
+            <option value="Other" <%= vehicle.vehicleType === "Other" ? "selected" : "" %>>Other</option>
+          </select>
+        </label>
+        <label id="vehicle-type-other-edit-wrap" hidden>
+          Other Type
+          <input name="vehicleTypeOther" value="<%= vehicle.vehicleTypeOther || '' %>" placeholder="Enter type" />
+        </label>
+
+        <div class="full" aria-hidden="true"></div>
+
+        <label>
+          Vehicle Owner
+          <select name="isMyVehicle" id="vehicle-owner-edit-select">
             <option value="true" <%= vehicle.isMyVehicle ? "selected" : "" %>>My Vehicle</option>
             <option value="false" <%= !vehicle.isMyVehicle ? "selected" : "" %>>Customer Vehicle</option>
           </select>
         </label>
-        <label>
+        <label id="customer-edit-wrap">
           Customer
           <select name="customerId">
             <option value="" <%= !vehicle.customerId ? "selected" : "" %>>Unassigned</option>
@@ -104,16 +127,17 @@
           </select>
         </label>
 
-        <div class="form-spacer" aria-hidden="true"></div>
+        <div class="full" aria-hidden="true"></div>
 
         <label>Year *<input name="year" value="<%= vehicle.year %>" required /></label>
         <label>Make *<input name="make" value="<%= vehicle.make %>" required /></label>
         <label>Model *<input name="model" value="<%= vehicle.model %>" required /></label>
 
-        <div class="form-spacer" aria-hidden="true"></div>
-
         <label>Plate<input name="plate" value="<%= vehicle.plate || '' %>" /></label>
         <label>Vin<input name="vin" class="mono" value="<%= vehicle.vin || '' %>" /></label>
+
+        <div class="full" aria-hidden="true"></div>
+
         <label>Mileage<input name="currentMileage" type="number" min="0" step="1" value="<%= vehicle.currentMileage || 0 %>" /></label>
         <label>Hours<input name="currentHours" type="number" min="0" step="0.1" value="<%= vehicle.currentHours || 0 %>" /></label>
         <div class="form-actions"><button class="button" type="submit">Update Vehicle</button></div>
@@ -141,6 +165,15 @@
           <form class="form-grid" action="/vehicles/<%= vehicle.id %>/services" method="POST">
             <label>Date *<input type="date" name="date" required /></label>
             <label>Service Type *<input name="serviceType" placeholder="Oil Change" required /></label>
+            <label>
+              Service Category *
+              <select name="serviceCategory" required>
+                <option value="Generic Service" selected>Generic Service</option>
+                <option value="Repair">Repair</option>
+                <option value="Upgrade">Upgrade</option>
+                <option value="Other">Other</option>
+              </select>
+            </label>
             <label>Description<input name="description" placeholder="5W-30 synthetic + filter" /></label>
             <label>Mileage<input name="mileage" type="number" min="0" step="1" /></label>
             <label>Hour Meter<input name="hours" type="number" min="0" step="0.1" /></label>
@@ -163,6 +196,7 @@
                   <th>Mileage / Hours</th>
                   <th>Cost</th>
                   <th>Notes</th>
+                  <th>Category</th>
                   <th></th>
                 </tr>
               </thead>
@@ -187,6 +221,7 @@
                     </td>
                     <td>$<%= Number(record.cost || 0).toFixed(2) %></td>
                     <td><%= record.notes || "-" %></td>
+                    <td><%= record.serviceCategory || "Generic Service" %></td>
                     <td>
                       <form action="/vehicles/<%= vehicle.id %>/services/<%= record.id %>/delete" method="POST" onsubmit="return confirm('Delete this service record?')">
                         <button class="button button-link button-danger" type="submit">Delete</button>
@@ -312,12 +347,24 @@
   <script>
     const editVehicleToggle = document.getElementById('edit-vehicle-toggle');
     const vehicleEditForm = document.getElementById('vehicle-edit-form');
+    const vehicleOwnerEditSelect = document.getElementById('vehicle-owner-edit-select');
+    const customerEditWrap = document.getElementById('customer-edit-wrap');
     const newServiceToggle = document.getElementById('new-service-toggle');
     const serviceRecordFormWrap = document.getElementById('service-record-form-wrap');
+    const vehicleTypeEditSelect = document.getElementById('vehicle-type-edit-select');
+    const vehicleTypeOtherEditWrap = document.getElementById('vehicle-type-other-edit-wrap');
     const newScheduledToggle = document.getElementById('new-scheduled-toggle');
     const scheduledFormWrap = document.getElementById('scheduled-form-wrap');
     const newPartToggle = document.getElementById('new-part-toggle');
     const partFormWrap = document.getElementById('part-form-wrap');
+
+    const syncEditCustomerVisibility = () => {
+      customerEditWrap.hidden = vehicleOwnerEditSelect.value === 'true';
+    };
+
+    const syncEditVehicleTypeVisibility = () => {
+      vehicleTypeOtherEditWrap.hidden = vehicleTypeEditSelect.value !== 'Other';
+    };
 
     const bindSectionToggle = (button, panel, openLabel, closedLabel) => {
       button.addEventListener('click', () => {
@@ -332,6 +379,10 @@
     bindSectionToggle(newServiceToggle, serviceRecordFormWrap, 'Hide Service Form', 'New Service Record');
     bindSectionToggle(newScheduledToggle, scheduledFormWrap, 'Hide Maintenance Form', 'New Maintenance Item');
     bindSectionToggle(newPartToggle, partFormWrap, 'Hide Part Form', 'New Part');
+    syncEditCustomerVisibility();
+    syncEditVehicleTypeVisibility();
+    vehicleOwnerEditSelect.addEventListener('change', syncEditCustomerVisibility);
+    vehicleTypeEditSelect.addEventListener('change', syncEditVehicleTypeVisibility);
 
     document.querySelectorAll('.tab-button').forEach((btn) => {
       btn.addEventListener('click', (e) => {

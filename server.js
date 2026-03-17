@@ -177,6 +177,29 @@ function toBoolean(value, fallback = false) {
   return fallback;
 }
 
+function normalizeVehicleType(value) {
+  const allowedTypes = new Set([
+    "Vehicle",
+    "ATV",
+    "SxS",
+    "Tractor",
+    "Lawn Mower",
+    "Chainsaw",
+    "Leafblower",
+    "Golf Cart",
+    "Other"
+  ]);
+
+  const nextType = typeof value === "string" ? value.trim() : "";
+  return allowedTypes.has(nextType) ? nextType : "Vehicle";
+}
+
+function normalizeVehicleTypeOther(value, vehicleType) {
+  if (vehicleType !== "Other") return "";
+  const text = typeof value === "string" ? value.trim() : "";
+  return text || "Other";
+}
+
 function getLastServiceDate(vehicle) {
   if (!Array.isArray(vehicle.services) || !vehicle.services.length) {
     return null;
@@ -310,10 +333,13 @@ app.post("/vehicles/import-csv", upload.single("csvFile"), async (req, res) => {
       continue;
     }
 
+    const vehicleType = "Vehicle";
     const vehicle = {
       id: randomUUID(),
       userId: req.user.id,
       isMyVehicle: true,
+      vehicleType,
+      vehicleTypeOther: "",
       year: year.trim(),
       make: make.trim(),
       model: model.trim(),
@@ -338,17 +364,20 @@ app.post("/vehicles/import-csv", upload.single("csvFile"), async (req, res) => {
 });
 
 app.post("/vehicles", async (req, res) => {
-  const { make, model, year, plate, vin, currentMileage, nickname, customerId, isMyVehicle } = req.body;
+  const { make, model, year, plate, vin, currentMileage, nickname, customerId, isMyVehicle, vehicleType, vehicleTypeOther } = req.body;
   const { currentHours } = req.body;
 
   if (!required(make) || !required(model) || !required(year)) {
     return res.status(400).send("Make, model, and year are required.");
   }
 
+  const nextVehicleType = normalizeVehicleType(vehicleType);
   const vehicle = {
     id: randomUUID(),
     userId: req.user.id,
     isMyVehicle: toBoolean(isMyVehicle, true),
+    vehicleType: nextVehicleType,
+    vehicleTypeOther: normalizeVehicleTypeOther(vehicleTypeOther, nextVehicleType),
     make: make.trim(),
     model: model.trim(),
     year: year.trim(),
@@ -382,18 +411,33 @@ app.get("/vehicles/:id", async (req, res) => {
 });
 
 app.post("/vehicles/:id/update", async (req, res) => {
-  const { make, model, year, plate, vin, currentMileage, nickname, customerId, isMyVehicle } = req.body;
+  const { make, model, year, plate, vin, currentMileage, nickname, customerId, isMyVehicle, vehicleType, vehicleTypeOther } = req.body;
   const { currentHours } = req.body;
 
   if (!required(make) || !required(model) || !required(year)) {
     return res.status(400).send("Make, model, and year are required.");
   }
 
+  const existingVehicle = await store.getVehicleById(req.params.id, req.user.id);
+  if (!existingVehicle) {
+    return res.status(404).send("Vehicle not found.");
+  }
+
+  const hasVehicleType = typeof vehicleType === "string" && vehicleType.trim().length > 0;
+  const nextVehicleType = hasVehicleType
+    ? normalizeVehicleType(vehicleType)
+    : (existingVehicle.vehicleType || "Vehicle");
+  const nextVehicleTypeOther = hasVehicleType
+    ? normalizeVehicleTypeOther(vehicleTypeOther, nextVehicleType)
+    : (existingVehicle.vehicleTypeOther || "");
+
   const updated = await store.updateVehicle(req.params.id, {
     make: make.trim(),
     model: model.trim(),
     year: year.trim(),
     isMyVehicle: toBoolean(isMyVehicle, true),
+    vehicleType: nextVehicleType,
+    vehicleTypeOther: nextVehicleTypeOther,
     plate: (plate || "").trim(),
     vin: (vin || "").trim(),
     currentMileage: toNumber(currentMileage, 0),
@@ -420,7 +464,7 @@ app.post("/vehicles/:id/services", async (req, res) => {
     return res.status(404).send("Vehicle not found.");
   }
 
-  const { date, serviceType, description, mileage, hours, cost, notes } = req.body;
+  const { date, serviceType, serviceCategory, description, mileage, hours, cost, notes } = req.body;
 
   if (!required(date) || !required(serviceType)) {
     return res.status(400).send("Service date and type are required.");
@@ -430,6 +474,7 @@ app.post("/vehicles/:id/services", async (req, res) => {
     id: randomUUID(),
     date: date.trim(),
     serviceType: serviceType.trim(),
+    serviceCategory: (serviceCategory || "Generic Service").trim(),
     description: (description || "").trim(),
     mileage: toOptionalNumber(mileage),
     hours: toOptionalNumber(hours),

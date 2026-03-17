@@ -15,7 +15,10 @@
       "parts": [],
       "scheduledMaintenance": [],
       "createdAt": "2026-03-17T18:14:13.435Z",
-      "updatedAt": "2026-03-17T18:14:13.435Z"
+      "updatedAt": "2026-03-17T18:14:13.435Z",
+      "isMyVehicle": true,
+      "vehicleType": "Vehicle",
+      "vehicleTypeOther": ""
     },
     {
       "id": "32fcfe60-f572-4b2c-8e3b-92960bd28241",
@@ -32,7 +35,10 @@
       "parts": [],
       "scheduledMaintenance": [],
       "createdAt": "2026-03-17T18:14:13.436Z",
-      "updatedAt": "2026-03-17T18:14:13.436Z"
+      "updatedAt": "2026-03-17T18:14:13.436Z",
+      "isMyVehicle": true,
+      "vehicleType": "Vehicle",
+      "vehicleTypeOther": ""
     },
     {
       "id": "8182b689-e772-431e-974b-e4078ef8029f",
@@ -49,7 +55,10 @@
       "parts": [],
       "scheduledMaintenance": [],
       "createdAt": "2026-03-17T18:14:13.437Z",
-      "updatedAt": "2026-03-17T18:14:13.437Z"
+      "updatedAt": "2026-03-17T18:14:13.437Z",
+      "isMyVehicle": true,
+      "vehicleType": "Vehicle",
+      "vehicleTypeOther": ""
     },
     {
       "id": "835c6dbd-5314-4d72-9a5d-3a49e7b1090a",
@@ -66,7 +75,10 @@
       "parts": [],
       "scheduledMaintenance": [],
       "createdAt": "2026-03-17T18:14:13.438Z",
-      "updatedAt": "2026-03-17T18:14:13.438Z"
+      "updatedAt": "2026-03-17T18:14:13.438Z",
+      "isMyVehicle": true,
+      "vehicleType": "Vehicle",
+      "vehicleTypeOther": ""
     },
     {
       "id": "3cf32fd1-817e-4358-b36d-6ea73766da41",
@@ -83,7 +95,10 @@
       "parts": [],
       "scheduledMaintenance": [],
       "createdAt": "2026-03-17T18:14:13.439Z",
-      "updatedAt": "2026-03-17T18:14:13.439Z"
+      "updatedAt": "2026-03-17T18:14:13.439Z",
+      "isMyVehicle": true,
+      "vehicleType": "Vehicle",
+      "vehicleTypeOther": ""
     },
     {
       "id": "da7ab81e-8d00-42c0-9873-7859ed08d471",
@@ -100,7 +115,10 @@
       "parts": [],
       "scheduledMaintenance": [],
       "createdAt": "2026-03-17T18:14:13.440Z",
-      "updatedAt": "2026-03-17T18:14:13.440Z"
+      "updatedAt": "2026-03-17T18:14:13.440Z",
+      "isMyVehicle": true,
+      "vehicleType": "Vehicle",
+      "vehicleTypeOther": ""
     },
     {
       "id": "d005fc0a-4f6b-4768-ad6f-003f4d8a7d74",
@@ -118,7 +136,10 @@
       "parts": [],
       "scheduledMaintenance": [],
       "createdAt": "2026-03-17T18:14:40.309Z",
-      "updatedAt": "2026-03-17T18:14:40.309Z"
+      "updatedAt": "2026-03-17T18:14:40.309Z",
+      "isMyVehicle": true,
+      "vehicleType": "Vehicle",
+      "vehicleTypeOther": ""
     },
     {
       "id": "ae2c9d70-6c0e-4de7-b181-b4b331fffdc7",
@@ -136,7 +157,10 @@
       "parts": [],
       "scheduledMaintenance": [],
       "createdAt": "2026-03-17T18:14:40.310Z",
-      "updatedAt": "2026-03-17T18:14:40.310Z"
+      "updatedAt": "2026-03-17T18:56:31.598Z",
+      "isMyVehicle": true,
+      "vehicleType": "Vehicle",
+      "vehicleTypeOther": ""
     },
     {
       "id": "c39a0080-33fb-4aca-8023-f7a756091a4e",
@@ -154,7 +178,10 @@
       "parts": [],
       "scheduledMaintenance": [],
       "createdAt": "2026-03-17T18:14:40.311Z",
-      "updatedAt": "2026-03-17T18:14:40.311Z"
+      "updatedAt": "2026-03-17T18:14:40.311Z",
+      "isMyVehicle": true,
+      "vehicleType": "Vehicle",
+      "vehicleTypeOther": ""
     },
     {
       "id": "76932ad6-e21d-423b-8f70-903cdfa99999",
@@ -164,11 +191,22 @@
       "model": "Econoline Super Duty",
       "plate": "R22-WJD",
       "vin": "1FDXE40F7WHA51447",
-      "currentMileage": 123456,
-      "currentHours": 0,
-      "customerId": "",
-      "nickname": "",
+      "currentMileage": 138770,
+      "currentHours": 7665,
+      "customerId": "7f8aa631-2285-4675-bd11-c99d2fc6b1b2",
+      "nickname": "Ambulance",
       "services": [
+        {
+          "id": "84fcc324-b2ac-4236-837d-4699c4980e96",
+          "date": "2026-03-17",
+          "serviceType": "Oil Change",
+          "description": "5w-30",
+          "mileage": 138770,
+          "hours": 7665,
+          "cost": 130.22,
+          "notes": "",
+          "createdAt": "2026-03-17T19:19:33.858Z"
+        },
         {
           "id": "1833191f-9a22-4991-9132-a05dc147f233",
           "date": "2026-03-17",
@@ -184,7 +222,10 @@
       "parts": [],
       "scheduledMaintenance": [],
       "createdAt": "2026-03-17T18:14:40.312Z",
-      "updatedAt": "2026-03-17T18:30:28.600Z"
+      "updatedAt": "2026-03-17T19:21:22.593Z",
+      "isMyVehicle": true,
+      "vehicleType": "Vehicle",
+      "vehicleTypeOther": ""
     },
     {
       "id": "fbcfd4cd-0cc8-43af-8c20-10242453832c",
@@ -202,7 +243,10 @@
       "parts": [],
       "scheduledMaintenance": [],
       "createdAt": "2026-03-17T18:14:40.313Z",
-      "updatedAt": "2026-03-17T18:14:40.313Z"
+      "updatedAt": "2026-03-17T19:21:34.731Z",
+      "isMyVehicle": true,
+      "vehicleType": "ATV",
+      "vehicleTypeOther": ""
     },
     {
       "id": "8778cf01-e3fa-49f0-906b-85158be9e6ce",
@@ -220,7 +264,10 @@
       "parts": [],
       "scheduledMaintenance": [],
       "createdAt": "2026-03-17T18:14:40.314Z",
-      "updatedAt": "2026-03-17T18:14:40.314Z"
+      "updatedAt": "2026-03-17T19:21:44.786Z",
+      "isMyVehicle": true,
+      "vehicleType": "Tractor",
+      "vehicleTypeOther": ""
     },
     {
       "id": "3ffd7953-5555-44aa-8ec4-83a21fc80b07",
@@ -236,7 +283,94 @@
       "nickname": "123",
       "services": [],
       "createdAt": "2026-03-17T18:36:21.567Z",
-      "updatedAt": "2026-03-17T18:36:21.567Z"
+      "updatedAt": "2026-03-17T18:36:21.567Z",
+      "parts": [],
+      "scheduledMaintenance": [],
+      "isMyVehicle": true,
+      "vehicleType": "Vehicle",
+      "vehicleTypeOther": ""
+    },
+    {
+      "id": "788da9ba-1060-4fbf-979b-59dce1605ada",
+      "userId": "102379774147883119360",
+      "isMyVehicle": false,
+      "make": "Toyota",
+      "model": "Rav4",
+      "year": "2018",
+      "plate": "UNK",
+      "vin": "UNK",
+      "currentMileage": 123456,
+      "currentHours": 0,
+      "customerId": "7f8aa631-2285-4675-bd11-c99d2fc6b1b2",
+      "nickname": "Ethan's Rav",
+      "services": [],
+      "createdAt": "2026-03-17T19:09:38.456Z",
+      "updatedAt": "2026-03-17T19:09:38.456Z",
+      "parts": [],
+      "scheduledMaintenance": [],
+      "vehicleType": "Vehicle",
+      "vehicleTypeOther": ""
+    },
+    {
+      "id": "249249f5-4899-4e1c-bc69-f3c332a3238b",
+      "userId": "102379774147883119360",
+      "isMyVehicle": true,
+      "vehicleType": "Other",
+      "vehicleTypeOther": "Log Splitter",
+      "make": "CountyLine",
+      "model": "40-Ton",
+      "year": "2023",
+      "plate": "N/A",
+      "vin": "UNK",
+      "currentMileage": 0,
+      "currentHours": 22,
+      "customerId": "",
+      "nickname": "",
+      "services": [],
+      "createdAt": "2026-03-17T19:22:42.936Z",
+      "updatedAt": "2026-03-17T19:23:09.936Z",
+      "parts": [],
+      "scheduledMaintenance": []
+    },
+    {
+      "id": "21ec5538-0a68-4bd4-8aec-d249eefa5e30",
+      "userId": "102379774147883119360",
+      "isMyVehicle": true,
+      "vehicleType": "Chainsaw",
+      "vehicleTypeOther": "",
+      "make": "Echo",
+      "model": "Timberwolf CS-590",
+      "year": "2023",
+      "plate": "N/A",
+      "vin": "C69015385796",
+      "currentMileage": 0,
+      "currentHours": 0,
+      "customerId": "",
+      "nickname": "",
+      "services": [],
+      "createdAt": "2026-03-17T19:24:04.475Z",
+      "updatedAt": "2026-03-17T19:24:04.475Z",
+      "parts": [],
+      "scheduledMaintenance": []
+    },
+    {
+      "id": "c0b17502-89aa-43d7-8e71-7fbc81fe7275",
+      "userId": "102379774147883119360",
+      "isMyVehicle": true,
+      "vehicleType": "Leafblower",
+      "vehicleTypeOther": "",
+      "make": "Echo",
+      "model": "PB-9010-H/T",
+      "year": "2023",
+      "plate": "",
+      "vin": "P53315032078",
+      "currentMileage": 0,
+      "currentHours": 0,
+      "customerId": "",
+      "nickname": "",
+      "services": [],
+      "createdAt": "2026-03-17T19:24:43.675Z",
+      "updatedAt": "2026-03-17T19:24:43.675Z"
     }
   ],
   "customers": [

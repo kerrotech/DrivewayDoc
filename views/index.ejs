@@ -130,10 +130,13 @@
           <table>
             <thead>
               <tr>
+                <th>Type</th>
                 <th><a class="sort-link <%= sortKey==='year' ? 'active' : '' %>" href="/?tab=vehicles&vehicleScope=<%= vehicleScope %>&sort=year&dir=<%= sortKey === 'year' && sortDir === 'asc' ? 'desc' : 'asc' %>">Year</a></th>
                 <th><a class="sort-link <%= sortKey==='make' ? 'active' : '' %>" href="/?tab=vehicles&vehicleScope=<%= vehicleScope %>&sort=make&dir=<%= sortKey === 'make' && sortDir === 'asc' ? 'desc' : 'asc' %>">Make</a></th>
                 <th><a class="sort-link <%= sortKey==='model' ? 'active' : '' %>" href="/?tab=vehicles&vehicleScope=<%= vehicleScope %>&sort=model&dir=<%= sortKey === 'model' && sortDir === 'asc' ? 'desc' : 'asc' %>">Model</a></th>
-                <th>Customer</th>
+                <% if (vehicleScope !== 'my') { %>
+                  <th>Customer</th>
+                <% } %>
                 <th><a class="sort-link <%= sortKey==='plate' ? 'active' : '' %>" href="/?tab=vehicles&vehicleScope=<%= vehicleScope %>&sort=plate&dir=<%= sortKey === 'plate' && sortDir === 'asc' ? 'desc' : 'asc' %>">Plate</a></th>
                 <th><a class="sort-link <%= sortKey==='vin' ? 'active' : '' %>" href="/?tab=vehicles&vehicleScope=<%= vehicleScope %>&sort=vin&dir=<%= sortKey === 'vin' && sortDir === 'asc' ? 'desc' : 'asc' %>">VIN</a></th>
                 <th><a class="sort-link <%= sortKey==='mileage' ? 'active' : '' %>" href="/?tab=vehicles&vehicleScope=<%= vehicleScope %>&sort=mileage&dir=<%= sortKey === 'mileage' && sortDir === 'asc' ? 'desc' : 'asc' %>">Mileage / Hrs</a></th>
@@ -143,7 +146,9 @@
             </thead>
             <tbody>
               <% vehicles.forEach((vehicle) => { %>
+                <% const vehicleTypeLabel = vehicle.vehicleType === 'Other' ? (vehicle.vehicleTypeOther || 'Other') : (vehicle.vehicleType || 'Vehicle'); %>
                 <tr>
+                  <td><%= vehicleTypeLabel %></td>
                   <td>
                     <strong><%= vehicle.year %></strong>
                   </td>
@@ -154,13 +159,17 @@
                       <div class="meta"><%= vehicle.nickname %></div>
                     <% } %>
                   </td>
-                  <td>
-                    <% if (vehicle.customer) { %>
-                      <a class="subtle-link" href="/customers/<%= vehicle.customer.id %>"><%= vehicle.customer.firstName %> <%= vehicle.customer.lastName %></a>
-                    <% } else { %>
-                      -
-                    <% } %>
-                  </td>
+                  <% if (vehicleScope !== 'my') { %>
+                    <td>
+                      <% if (vehicleScope === 'all' && vehicle.isMyVehicle) { %>
+                        My Vehicle
+                      <% } else if (vehicle.customer) { %>
+                        <a class="subtle-link" href="/customers/<%= vehicle.customer.id %>"><%= vehicle.customer.firstName %> <%= vehicle.customer.lastName %></a>
+                      <% } else { %>
+                        -
+                      <% } %>
+                    </td>
+                  <% } %>
                   <td><%= vehicle.plate || "-" %></td>
                   <td class="mono"><%= vehicle.vin || "-" %></td>
                   <td>

@@ -36,19 +36,40 @@
 
   <main class="page-main">
     <section class="panel">
-      <form class="form-grid" action="/vehicles" method="POST">
+      <form class="form-grid vehicle-edit-grid" action="/vehicles" method="POST">
         <label>
           Nick Name
           <input name="nickname" placeholder="Work Truck 1" />
         </label>
         <label>
           Vehicle Type
-          <select name="isMyVehicle">
+          <select name="vehicleType" id="vehicle-type-select">
+            <option value="Vehicle" selected>Vehicle</option>
+            <option value="ATV">ATV</option>
+            <option value="SxS">SxS</option>
+            <option value="Tractor">Tractor</option>
+            <option value="Lawn Mower">Lawn Mower</option>
+            <option value="Chainsaw">Chainsaw</option>
+            <option value="Leafblower">Leafblower</option>
+            <option value="Golf Cart">Golf Cart</option>
+            <option value="Other">Other</option>
+          </select>
+        </label>
+        <label id="vehicle-type-other-wrap" hidden>
+          Other Type
+          <input name="vehicleTypeOther" placeholder="Enter type" />
+        </label>
+
+        <div class="full" aria-hidden="true"></div>
+
+        <label>
+          Vehicle Owner
+          <select name="isMyVehicle" id="vehicle-owner-select">
             <option value="true" selected>My Vehicle</option>
             <option value="false">Customer Vehicle</option>
           </select>
         </label>
-        <label>
+        <label id="customer-select-wrap">
           Customer
           <select name="customerId">
             <option value="">Unassigned</option>
@@ -58,7 +79,8 @@
           </select>
         </label>
 
-        <div class="form-spacer" aria-hidden="true"></div>
+        <div class="full" aria-hidden="true"></div>
+
         <label>
           Year *
           <input name="year" required />
@@ -82,6 +104,9 @@
           Vin
           <input name="vin" class="mono" />
         </label>
+
+        <div class="full" aria-hidden="true"></div>
+
         <label>
           Mileage
           <input name="currentMileage" type="number" min="0" step="1" />
@@ -99,5 +124,25 @@
   </main>
 
   <%- include('_footer') %>
+
+  <script>
+    const vehicleOwnerSelect = document.getElementById('vehicle-owner-select');
+    const customerSelectWrap = document.getElementById('customer-select-wrap');
+    const vehicleTypeSelect = document.getElementById('vehicle-type-select');
+    const vehicleTypeOtherWrap = document.getElementById('vehicle-type-other-wrap');
+
+    const syncCustomerVisibility = () => {
+      customerSelectWrap.hidden = vehicleOwnerSelect.value === 'true';
+    };
+
+    const syncVehicleTypeVisibility = () => {
+      vehicleTypeOtherWrap.hidden = vehicleTypeSelect.value !== 'Other';
+    };
+
+    syncCustomerVisibility();
+    syncVehicleTypeVisibility();
+    vehicleOwnerSelect.addEventListener('change', syncCustomerVisibility);
+    vehicleTypeSelect.addEventListener('change', syncVehicleTypeVisibility);
+  </script>
 </body>
 </html>

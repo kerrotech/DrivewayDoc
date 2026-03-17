@@ -550,6 +550,11 @@ textarea:focus {
   letter-spacing: 0.05em;
 }
 
+.vehicle-edit-grid {
+  grid-template-columns: repeat(3, minmax(160px, 1fr));
+  margin-top: 1.1rem;
+}
+
 .tabs-container {
   display: flex;
   gap: 0.5rem;
@@ -680,6 +685,10 @@ textarea:focus {
   }
 
   .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .vehicle-edit-grid {
     grid-template-columns: 1fr;
   }
 

@@ -50,6 +50,7 @@
           <table>
             <thead>
               <tr>
+                <th>Type</th>
                 <th>Vehicle</th>
                 <th>Plate</th>
                 <th>VIN</th>
@@ -60,7 +61,9 @@
             </thead>
             <tbody>
               <% vehicles.forEach((vehicle) => { %>
+                <% const vehicleTypeLabel = vehicle.vehicleType === 'Other' ? (vehicle.vehicleTypeOther || 'Other') : (vehicle.vehicleType || 'Vehicle'); %>
                 <tr>
+                  <td><%= vehicleTypeLabel %></td>
                   <td>
                     <strong><%= vehicle.year %> <%= vehicle.make %> <%= vehicle.model %></strong>
                     <% if (vehicle.nickname) { %>
