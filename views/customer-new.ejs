@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DrivewayDoc | Add Customer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <%- include('_nav') %>
+
+  <header class="page-header">
+    <div class="page-header-inner">
+      <div class="breadcrumb">
+        <a href="/">Dashboard</a>
+        <span class="breadcrumb-sep">/</span>
+        <a href="/?tab=customers">Customers</a>
+        <span class="breadcrumb-sep">/</span>
+        <span>Add Customer</span>
+      </div>
+      <div class="page-title-row">
+        <div>
+          <h1>Add Customer</h1>
+          <p class="subtitle">Create a customer profile so vehicles can be assigned to an owner.</p>
+        </div>
+        <div class="page-actions">
+          <a class="button button-ghost" href="/">← Back</a>
+          <a class="button button-ghost" href="/vehicles/new">Add Vehicle</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="page-main">
+
+    <section class="panel">
+      <form class="form-grid" action="/customers" method="POST">
+        <label>
+          First Name *
+          <input name="firstName" required />
+        </label>
+        <label>
+          Last Name *
+          <input name="lastName" required />
+        </label>
+        <label>
+          Phone
+          <input name="phone" type="tel" />
+        </label>
+        <label>
+          Email
+          <input name="email" type="email" />
+        </label>
+        <div class="form-actions">
+          <button class="button" type="submit">Save Customer</button>
+        </div>
+      </form>
+    </section>
+  </main>
+  <%- include('_footer') %>
+</body>
+</html>

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DrivewayDoc</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <%- include('_nav') %>
+
+  <header class="page-header">
+    <div class="page-header-inner">
+      <div class="page-tabs-bar">
+        <div class="tabs-container">
+          <a class="tab-button <%= activeTab === 'vehicles' ? 'active' : '' %>" href="/?tab=vehicles&vehicleScope=<%= vehicleScope %>&sort=<%= sortKey %>&dir=<%= sortDir %>">Vehicles</a>
+          <a class="tab-button <%= activeTab === 'customers' ? 'active' : '' %>" href="/?tab=customers&sort=<%= sortKey %>&dir=<%= sortDir %>">Customers</a>
+        </div>
+        <div class="page-actions">
+          <% if (activeTab === 'vehicles') { %>
+            <div class="split-action" data-split-action>
+              <a class="button button-add split-main" href="/vehicles/new"><span class="plus-icon">+</span> Add Vehicle</a>
+              <button class="button split-toggle" type="button" aria-label="More add vehicle options" aria-expanded="false">▾</button>
+              <div class="split-menu" hidden>
+                <a class="split-menu-item" href="/vehicles/import-csv">Add Vehicle via CSV</a>
+              </div>
+            </div>
+          <% } else { %>
+            <div class="split-action" data-split-action>
+              <a class="button button-add split-main" href="/customers/new"><span class="plus-icon">+</span> Add Customer</a>
+              <button class="button split-toggle" type="button" aria-label="More add customer options" aria-expanded="false">▾</button>
+              <div class="split-menu" hidden>
+                <a class="split-menu-item" href="/customers/import-csv">Add Customers via CSV</a>
+              </div>
+            </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="page-main">
+
+    <% if (activeTab === 'customers') { %>
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Customers</h2>
+        <span><%= customers.length %> total</span>
+      </div>
+
+      <% if (!customers.length) { %>
+        <div class="empty">
+          <p>No customers yet. Add one and assign vehicles to them.</p>
+        </div>
+      <% } else { %>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>First Name <a class="sort-arrow <%= sortKey==='firstName'&&sortDir==='asc'?'active':'' %>" href="/?tab=customers&sort=firstName&dir=asc">↑</a><a class="sort-arrow <%= sortKey==='firstName'&&sortDir==='desc'?'active':'' %>" href="/?tab=customers&sort=firstName&dir=desc">↓</a></th>
+                <th>Last Name <a class="sort-arrow <%= sortKey==='lastName'&&sortDir==='asc'?'active':'' %>" href="/?tab=customers&sort=lastName&dir=asc">↑</a><a class="sort-arrow <%= sortKey==='lastName'&&sortDir==='desc'?'active':'' %>" href="/?tab=customers&sort=lastName&dir=desc">↓</a></th>
+                <th>Phone <a class="sort-arrow <%= sortKey==='phone'&&sortDir==='asc'?'active':'' %>" href="/?tab=customers&sort=phone&dir=asc">↑</a><a class="sort-arrow <%= sortKey==='phone'&&sortDir==='desc'?'active':'' %>" href="/?tab=customers&sort=phone&dir=desc">↓</a></th>
+                <th>Email <a class="sort-arrow <%= sortKey==='email'&&sortDir==='asc'?'active':'' %>" href="/?tab=customers&sort=email&dir=asc">↑</a><a class="sort-arrow <%= sortKey==='email'&&sortDir==='desc'?'active':'' %>" href="/?tab=customers&sort=email&dir=desc">↓</a></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% customers.forEach((customer) => { %>
+                <tr>
+                  <td><%= customer.firstName %></td>
+                  <td><strong><%= customer.lastName %></strong></td>
+                  <td><%= customer.phone || "-" %></td>
+                  <td><%= customer.email || "-" %></td>
+                  <td class="row-actions">
+                    <a class="button button-link" href="/customers/<%= customer.id %>">Open</a>
+                    <form method="POST" action="/customers/<%= customer.id %>/delete" style="display:inline" onsubmit="return confirm('Delete this customer?')">
+                      <button class="button button-danger" type="submit">Delete</button>
+                    </form>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </section>
+    <% } %>
+
+    <% if (activeTab === 'vehicles') { %>
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <h2>
+            <%= vehicleScope === 'all' ? 'All Vehicles' : vehicleScope === 'customer' ? 'Customer Vehicles' : 'My Vehicles' %>
+          </h2>
+          <div class="subtabs-container">
+            <a class="subtab-button <%= vehicleScope === 'my' ? 'active' : '' %>" href="/?tab=vehicles&vehicleScope=my&sort=<%= sortKey %>&dir=<%= sortDir %>">My Vehicles</a>
+            <a class="subtab-button <%= vehicleScope === 'customer' ? 'active' : '' %>" href="/?tab=vehicles&vehicleScope=customer&sort=<%= sortKey %>&dir=<%= sortDir %>">Customer Vehicles</a>
+            <a class="subtab-button <%= vehicleScope === 'all' ? 'active' : '' %>" href="/?tab=vehicles&vehicleScope=all&sort=<%= sortKey %>&dir=<%= sortDir %>">All Vehicles</a>
+          </div>
+        </div>
+        <span><%= vehicles.length %> total</span>
+      </div>
+
+      <div class="sort-row" style="display:none">
+        <a class="button button-ghost <%= sortKey === 'year' ? 'is-active' : '' %>" href="/?tab=vehicles&sort=year">Sort: Year</a>
+        <a class="button button-ghost <%= sortKey === 'make' ? 'is-active' : '' %>" href="/?tab=vehicles&sort=make">Sort: Make</a>
+        <a class="button button-ghost <%= sortKey === 'model' ? 'is-active' : '' %>" href="/?tab=vehicles&sort=model">Sort: Model</a>
+        <a class="button button-ghost <%= sortKey === 'plate' ? 'is-active' : '' %>" href="/?tab=vehicles&sort=plate">Sort: Plate</a>
+        <a class="button button-ghost <%= sortKey === 'vin' ? 'is-active' : '' %>" href="/?tab=vehicles&sort=vin">Sort: VIN</a>
+        <a class="button button-ghost <%= sortKey === 'mileage' ? 'is-active' : '' %>" href="/?tab=vehicles&sort=mileage">Sort: Mileage</a>
+        <a class="button button-ghost <%= sortKey === 'lastServiceDate' ? 'is-active' : '' %>" href="/?tab=vehicles&sort=lastServiceDate">Sort: Last Service Date</a>
+      </div>
+
+      <% if (!vehicles.length) { %>
+        <div class="empty">
+          <p>
+            <%= vehicleScope === 'all'
+              ? 'No vehicles yet. Add your first one to start tracking service history.'
+              : vehicleScope === 'customer'
+                ? 'No customer vehicles yet. Mark a vehicle as Customer Vehicle to list it here.'
+                : 'No my vehicles yet. Add one and keep Vehicle Type set to My Vehicle.' %>
+          </p>
+        </div>
+      <% } else { %>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th><a class="sort-link <%= sortKey==='year' ? 'active' : '' %>" href="/?tab=vehicles&vehicleScope=<%= vehicleScope %>&sort=year&dir=<%= sortKey === 'year' && sortDir === 'asc' ? 'desc' : 'asc' %>">Year</a></th>
+                <th><a class="sort-link <%= sortKey==='make' ? 'active' : '' %>" href="/?tab=vehicles&vehicleScope=<%= vehicleScope %>&sort=make&dir=<%= sortKey === 'make' && sortDir === 'asc' ? 'desc' : 'asc' %>">Make</a></th>
+                <th><a class="sort-link <%= sortKey==='model' ? 'active' : '' %>" href="/?tab=vehicles&vehicleScope=<%= vehicleScope %>&sort=model&dir=<%= sortKey === 'model' && sortDir === 'asc' ? 'desc' : 'asc' %>">Model</a></th>
+                <th>Customer</th>
+                <th><a class="sort-link <%= sortKey==='plate' ? 'active' : '' %>" href="/?tab=vehicles&vehicleScope=<%= vehicleScope %>&sort=plate&dir=<%= sortKey === 'plate' && sortDir === 'asc' ? 'desc' : 'asc' %>">Plate</a></th>
+                <th><a class="sort-link <%= sortKey==='vin' ? 'active' : '' %>" href="/?tab=vehicles&vehicleScope=<%= vehicleScope %>&sort=vin&dir=<%= sortKey === 'vin' && sortDir === 'asc' ? 'desc' : 'asc' %>">VIN</a></th>
+                <th><a class="sort-link <%= sortKey==='mileage' ? 'active' : '' %>" href="/?tab=vehicles&vehicleScope=<%= vehicleScope %>&sort=mileage&dir=<%= sortKey === 'mileage' && sortDir === 'asc' ? 'desc' : 'asc' %>">Mileage / Hrs</a></th>
+                <th><a class="sort-link <%= sortKey==='lastServiceDate' ? 'active' : '' %>" href="/?tab=vehicles&vehicleScope=<%= vehicleScope %>&sort=lastServiceDate&dir=<%= sortKey === 'lastServiceDate' && sortDir === 'asc' ? 'desc' : 'asc' %>">Last Service</a></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% vehicles.forEach((vehicle) => { %>
+                <tr>
+                  <td>
+                    <strong><%= vehicle.year %></strong>
+                  </td>
+                  <td><%= vehicle.make %></td>
+                  <td>
+                    <%= vehicle.model %>
+                    <% if (vehicle.nickname) { %>
+                      <div class="meta"><%= vehicle.nickname %></div>
+                    <% } %>
+                  </td>
+                  <td>
+                    <% if (vehicle.customer) { %>
+                      <a class="subtle-link" href="/customers/<%= vehicle.customer.id %>"><%= vehicle.customer.firstName %> <%= vehicle.customer.lastName %></a>
+                    <% } else { %>
+                      -
+                    <% } %>
+                  </td>
+                  <td><%= vehicle.plate || "-" %></td>
+                  <td class="mono"><%= vehicle.vin || "-" %></td>
+                  <td>
+                    <% if (vehicle.currentMileage && vehicle.currentHours) { %>
+                      <div><%= Number(vehicle.currentMileage).toLocaleString() %> mi</div>
+                      <div class="meta"><%= Number(vehicle.currentHours).toLocaleString() %> hrs</div>
+                    <% } else if (vehicle.currentMileage) { %>
+                      <%= Number(vehicle.currentMileage).toLocaleString() %> mi
+                    <% } else if (vehicle.currentHours) { %>
+                      <%= Number(vehicle.currentHours).toLocaleString() %> hrs
+                    <% } else { %>
+                      -
+                    <% } %>
+                  </td>
+                  <td><%= vehicle.lastServiceDate || "No Record" %></td>
+                  <td><a class="button button-link" href="/vehicles/<%= vehicle.id %>">Open</a></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </section>
+    <% } %>
+  </main>
+
+  <%- include('_footer') %>
+
+  <script>
+    document.querySelectorAll('[data-split-action]').forEach((action) => {
+      const toggle = action.querySelector('.split-toggle');
+      const menu = action.querySelector('.split-menu');
+
+      const closeMenu = () => {
+        menu.hidden = true;
+        toggle.setAttribute('aria-expanded', 'false');
+      };
+
+      const openMenu = () => {
+        menu.hidden = false;
+        toggle.setAttribute('aria-expanded', 'true');
+      };
+
+      toggle.addEventListener('click', (event) => {
+        event.stopPropagation();
+        if (menu.hidden) {
+          openMenu();
+        } else {
+          closeMenu();
+        }
+      });
+
+      document.addEventListener('click', (event) => {
+        if (!action.contains(event.target)) {
+          closeMenu();
+        }
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          closeMenu();
+        }
+      });
+    });
+  </script>
+</body>
+</html>

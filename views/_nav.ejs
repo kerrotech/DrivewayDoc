@@ -1,0 +1,11 @@
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a class="nav-logo" href="/">DrivewayDoc</a>
+    <% if (user) { %>
+    <div class="nav-right">
+      <span class="nav-user"><%= user.displayName || user.email %></span>
+      <a class="button button-ghost btn-sm" href="/logout">Sign Out</a>
+    </div>
+    <% } %>
+  </div>
+</nav>

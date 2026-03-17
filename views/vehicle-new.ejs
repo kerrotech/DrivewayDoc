@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DrivewayDoc | Add Vehicle</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <%- include('_nav') %>
+
+  <header class="page-header">
+    <div class="page-header-inner">
+      <div class="breadcrumb">
+        <a href="/">Dashboard</a>
+        <span class="breadcrumb-sep">/</span>
+        <a href="/?tab=vehicles">Vehicles</a>
+        <span class="breadcrumb-sep">/</span>
+        <span>Add Vehicle</span>
+      </div>
+      <div class="page-title-row">
+        <div>
+          <h1>Add Vehicle</h1>
+          <p class="subtitle">Capture the basics now and add service records anytime.</p>
+        </div>
+        <div class="page-actions">
+          <a class="button button-ghost btn-sm" href="/?tab=vehicles">← Back</a>
+          <a class="button button-ghost btn-sm" href="/customers/new">Add Customer</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="page-main">
+    <section class="panel">
+      <form class="form-grid" action="/vehicles" method="POST">
+        <label>
+          Nick Name
+          <input name="nickname" placeholder="Work Truck 1" />
+        </label>
+        <label>
+          Vehicle Type
+          <select name="isMyVehicle">
+            <option value="true" selected>My Vehicle</option>
+            <option value="false">Customer Vehicle</option>
+          </select>
+        </label>
+        <label>
+          Customer
+          <select name="customerId">
+            <option value="">Unassigned</option>
+            <% customers.forEach((customer) => { %>
+              <option value="<%= customer.id %>"><%= customer.firstName %> <%= customer.lastName %></option>
+            <% }) %>
+          </select>
+        </label>
+
+        <div class="form-spacer" aria-hidden="true"></div>
+        <label>
+          Year *
+          <input name="year" required />
+        </label>
+        <label>
+          Make *
+          <input name="make" required />
+        </label>
+        <label>
+          Model *
+          <input name="model" required />
+        </label>
+
+        <div class="form-spacer" aria-hidden="true"></div>
+
+        <label>
+          Plate
+          <input name="plate" />
+        </label>
+        <label>
+          Vin
+          <input name="vin" class="mono" />
+        </label>
+        <label>
+          Mileage
+          <input name="currentMileage" type="number" min="0" step="1" />
+        </label>
+        <label>
+          Hours
+          <input name="currentHours" type="number" min="0" step="0.1" placeholder="0" />
+        </label>
+
+        <div class="form-actions">
+          <button class="button" type="submit">Save Vehicle</button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <%- include('_footer') %>
+</body>
+</html>

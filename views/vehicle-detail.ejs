@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DrivewayDoc | <%= vehicle.year %> <%= vehicle.make %> <%= vehicle.model %></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <%- include('_nav') %>
+
+  <header class="page-header">
+    <div class="page-header-inner">
+      <div class="breadcrumb">
+        <a href="/">Dashboard</a>
+        <span class="breadcrumb-sep">/</span>
+        <a href="/?tab=vehicles">Vehicles</a>
+        <span class="breadcrumb-sep">/</span>
+        <span><%= vehicle.year %> <%= vehicle.make %> <%= vehicle.model %></span>
+      </div>
+      <div class="page-title-row">
+        <div>
+          <h1><%= vehicle.year %> <%= vehicle.make %> <%= vehicle.model %></h1>
+          <p class="subtitle">
+            <%= vehicle.nickname || "Fleet Vehicle" %>
+            <% if (vehicle.customer) { %>
+              &middot; Owner: <a class="subtle-link" href="/customers/<%= vehicle.customer.id %>"><%= vehicle.customer.firstName %> <%= vehicle.customer.lastName %></a>
+            <% } %>
+          </p>
+        </div>
+        <div class="page-actions">
+          <form action="/vehicles/<%= vehicle.id %>/delete" method="POST" onsubmit="return confirm('Delete this vehicle and all service records?')">
+            <button class="button button-danger" type="submit">Delete Vehicle</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="page-main">
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Vehicle Info</h2>
+        <button class="button button-ghost" id="edit-vehicle-toggle" type="button" aria-expanded="false">Edit Vehicle</button>
+      </div>
+
+      <div class="vehicle-summary" id="vehicle-summary">
+        <div class="vehicle-summary-item">
+          <span class="vehicle-summary-label">Nickname</span>
+          <strong><%= vehicle.nickname || "-" %></strong>
+        </div>
+        <div class="vehicle-summary-item">
+          <span class="vehicle-summary-label">Vehicle Type</span>
+          <strong><%= vehicle.isMyVehicle ? "My Vehicle" : "Customer Vehicle" %></strong>
+        </div>
+        <div class="vehicle-summary-item">
+          <span class="vehicle-summary-label">Customer</span>
+          <strong>
+            <% if (vehicle.customer) { %>
+              <a class="subtle-link" href="/customers/<%= vehicle.customer.id %>"><%= vehicle.customer.firstName %> <%= vehicle.customer.lastName %></a>
+            <% } else { %>
+              Unassigned
+            <% } %>
+          </strong>
+        </div>
+        <div class="vehicle-summary-item">
+          <span class="vehicle-summary-label">Plate</span>
+          <strong><%= vehicle.plate || "-" %></strong>
+        </div>
+        <div class="vehicle-summary-item">
+          <span class="vehicle-summary-label">VIN</span>
+          <strong class="mono"><%= vehicle.vin || "-" %></strong>
+        </div>
+        <div class="vehicle-summary-item">
+          <span class="vehicle-summary-label">Mileage</span>
+          <strong><%= Number(vehicle.currentMileage || 0).toLocaleString() %> mi</strong>
+        </div>
+        <div class="vehicle-summary-item">
+          <span class="vehicle-summary-label">Hours</span>
+          <strong><%= Number(vehicle.currentHours || 0).toLocaleString() %> hrs</strong>
+        </div>
+      </div>
+
+      <form class="form-grid" id="vehicle-edit-form" action="/vehicles/<%= vehicle.id %>/update" method="POST" hidden>
+        <label>Nick Name<input name="nickname" value="<%= vehicle.nickname || '' %>" /></label>
+        <label>
+          Vehicle Type
+          <select name="isMyVehicle">
+            <option value="true" <%= vehicle.isMyVehicle ? "selected" : "" %>>My Vehicle</option>
+            <option value="false" <%= !vehicle.isMyVehicle ? "selected" : "" %>>Customer Vehicle</option>
+          </select>
+        </label>
+        <label>
+          Customer
+          <select name="customerId">
+            <option value="" <%= !vehicle.customerId ? "selected" : "" %>>Unassigned</option>
+            <% customers.forEach((customer) => { %>
+              <option value="<%= customer.id %>" <%= vehicle.customerId === customer.id ? "selected" : "" %>><%= customer.firstName %> <%= customer.lastName %></option>
+            <% }) %>
+          </select>
+        </label>
+
+        <div class="form-spacer" aria-hidden="true"></div>
+
+        <label>Year *<input name="year" value="<%= vehicle.year %>" required /></label>
+        <label>Make *<input name="make" value="<%= vehicle.make %>" required /></label>
+        <label>Model *<input name="model" value="<%= vehicle.model %>" required /></label>
+
+        <div class="form-spacer" aria-hidden="true"></div>
+
+        <label>Plate<input name="plate" value="<%= vehicle.plate || '' %>" /></label>
+        <label>Vin<input name="vin" class="mono" value="<%= vehicle.vin || '' %>" /></label>
+        <label>Mileage<input name="currentMileage" type="number" min="0" step="1" value="<%= vehicle.currentMileage || 0 %>" /></label>
+        <label>Hours<input name="currentHours" type="number" min="0" step="0.1" value="<%= vehicle.currentHours || 0 %>" /></label>
+        <div class="form-actions"><button class="button" type="submit">Update Vehicle</button></div>
+      </form>
+    </section>
+
+    <section class="panel">
+      <div class="tabs-container">
+        <button class="tab-button active" data-tab="service">Service History</button>
+        <button class="tab-button" data-tab="scheduled">Scheduled Maintenance</button>
+        <button class="tab-button" data-tab="parts">Parts</button>
+      </div>
+
+      <div id="service" class="tab-content active">
+        <div class="panel-head">
+          <h2>Service Records</h2>
+          <div class="panel-head-actions">
+            <span><%= Array.isArray(vehicle.services) ? vehicle.services.length : 0 %> records</span>
+            <button class="button button-ghost" id="new-service-toggle" type="button" aria-expanded="false">New Service Record</button>
+          </div>
+        </div>
+
+        <div id="service-record-form-wrap" style="margin-bottom: 1rem;" hidden>
+          <h3 style="margin: 0 0 0.5rem 0; font-size: 0.95rem; color: var(--muted);">Add Service Record</h3>
+          <form class="form-grid" action="/vehicles/<%= vehicle.id %>/services" method="POST">
+            <label>Date *<input type="date" name="date" required /></label>
+            <label>Service Type *<input name="serviceType" placeholder="Oil Change" required /></label>
+            <label>Description<input name="description" placeholder="5W-30 synthetic + filter" /></label>
+            <label>Mileage<input name="mileage" type="number" min="0" step="1" /></label>
+            <label>Hour Meter<input name="hours" type="number" min="0" step="0.1" /></label>
+            <label>Cost<input name="cost" type="number" min="0" step="0.01" /></label>
+            <label class="full">Notes<textarea name="notes" rows="2"></textarea></label>
+            <div class="form-actions"><button class="button" type="submit">Add Record</button></div>
+          </form>
+        </div>
+
+        <% if (!vehicle.services || !vehicle.services.length) { %>
+          <div class="empty"><p>No service records yet.</p></div>
+        <% } else { %>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Type</th>
+                  <th>Description</th>
+                  <th>Mileage / Hours</th>
+                  <th>Cost</th>
+                  <th>Notes</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <% vehicle.services.forEach((record) => { %>
+                  <tr>
+                    <td><%= record.date %></td>
+                    <td><strong><%= record.serviceType %></strong></td>
+                    <td><%= record.description || "-" %></td>
+                    <td>
+                      <% const hasMileage = Number.isFinite(record.mileage); %>
+                      <% const hasHours = Number.isFinite(record.hours); %>
+                      <% if (hasMileage && hasHours) { %>
+                        <%= Number(record.mileage).toLocaleString() %> mi / <%= Number(record.hours).toLocaleString() %> hr
+                      <% } else if (hasMileage) { %>
+                        <%= Number(record.mileage).toLocaleString() %> mi
+                      <% } else if (hasHours) { %>
+                        <%= Number(record.hours).toLocaleString() %> hr
+                      <% } else { %>
+                        -
+                      <% } %>
+                    </td>
+                    <td>$<%= Number(record.cost || 0).toFixed(2) %></td>
+                    <td><%= record.notes || "-" %></td>
+                    <td>
+                      <form action="/vehicles/<%= vehicle.id %>/services/<%= record.id %>/delete" method="POST" onsubmit="return confirm('Delete this service record?')">
+                        <button class="button button-link button-danger" type="submit">Delete</button>
+                      </form>
+                    </td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        <% } %>
+      </div>
+
+      <div id="scheduled" class="tab-content">
+        <div class="panel-head">
+          <h2>Scheduled Maintenance</h2>
+          <div class="panel-head-actions">
+            <span><%= Array.isArray(vehicle.scheduledMaintenance) ? vehicle.scheduledMaintenance.length : 0 %> items</span>
+            <button class="button button-ghost" id="new-scheduled-toggle" type="button" aria-expanded="false">New Maintenance Item</button>
+          </div>
+        </div>
+
+        <div id="scheduled-form-wrap" style="margin-bottom: 1rem;" hidden>
+          <h3 style="margin: 0 0 0.5rem 0; font-size: 0.95rem; color: var(--muted);">Add Scheduled Maintenance</h3>
+          <form class="form-grid" action="/vehicles/<%= vehicle.id %>/scheduled-maintenance" method="POST">
+            <label>Due Date *<input type="date" name="dueDate" required /></label>
+            <label>Maintenance Type *<input name="maintenanceType" placeholder="Oil Change" required /></label>
+            <label>Description<input name="description" placeholder="Synthetic oil change" /></label>
+            <label class="full">Notes<textarea name="notes" rows="2"></textarea></label>
+            <div class="form-actions"><button class="button" type="submit">Add Maintenance</button></div>
+          </form>
+        </div>
+
+        <% if (!vehicle.scheduledMaintenance || !vehicle.scheduledMaintenance.length) { %>
+          <div class="empty"><p>No scheduled maintenance yet.</p></div>
+        <% } else { %>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Due Date</th>
+                  <th>Maintenance Type</th>
+                  <th>Description</th>
+                  <th>Notes</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <% vehicle.scheduledMaintenance.forEach((item) => { %>
+                  <tr>
+                    <td><%= item.dueDate %></td>
+                    <td><strong><%= item.maintenanceType %></strong></td>
+                    <td><%= item.description || "-" %></td>
+                    <td><%= item.notes || "-" %></td>
+                    <td>
+                      <form action="/vehicles/<%= vehicle.id %>/scheduled-maintenance/<%= item.id %>/delete" method="POST" onsubmit="return confirm('Delete this maintenance item?')">
+                        <button class="button button-link button-danger" type="submit">Delete</button>
+                      </form>
+                    </td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        <% } %>
+      </div>
+
+      <div id="parts" class="tab-content">
+        <div class="panel-head">
+          <h2>Inventory</h2>
+          <div class="panel-head-actions">
+            <span><%= Array.isArray(vehicle.parts) ? vehicle.parts.length : 0 %> items</span>
+            <button class="button button-ghost" id="new-part-toggle" type="button" aria-expanded="false">New Part</button>
+          </div>
+        </div>
+
+        <div id="part-form-wrap" style="margin-bottom: 1rem;" hidden>
+          <h3 style="margin: 0 0 0.5rem 0; font-size: 0.95rem; color: var(--muted);">Add Part</h3>
+          <form class="form-grid" action="/vehicles/<%= vehicle.id %>/parts" method="POST">
+            <label>Part Name *<input name="partName" required /></label>
+            <label>Part Number<input name="partNumber" class="mono" /></label>
+            <label class="full">Notes<textarea name="notes" rows="2"></textarea></label>
+            <div class="form-actions"><button class="button" type="submit">Add Part</button></div>
+          </form>
+        </div>
+
+        <% if (!vehicle.parts || !vehicle.parts.length) { %>
+          <div class="empty"><p>No parts logged yet.</p></div>
+        <% } else { %>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Part Name</th>
+                  <th>Part Number</th>
+                  <th>Notes</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <% vehicle.parts.forEach((part) => { %>
+                  <tr>
+                    <td><strong><%= part.partName %></strong></td>
+                    <td class="mono"><%= part.partNumber || "-" %></td>
+                    <td><%= part.notes || "-" %></td>
+                    <td>
+                      <form action="/vehicles/<%= vehicle.id %>/parts/<%= part.id %>/delete" method="POST" onsubmit="return confirm('Delete this part?')">
+                        <button class="button button-link button-danger" type="submit">Delete</button>
+                      </form>
+                    </td>
+                  </tr>
+                <% }) %>
+              </tbody>
+            </table>
+          </div>
+        <% } %>
+      </div>
+    </section>
+  </main>
+
+  <%- include('_footer') %>
+
+  <script>
+    const editVehicleToggle = document.getElementById('edit-vehicle-toggle');
+    const vehicleEditForm = document.getElementById('vehicle-edit-form');
+    const newServiceToggle = document.getElementById('new-service-toggle');
+    const serviceRecordFormWrap = document.getElementById('service-record-form-wrap');
+    const newScheduledToggle = document.getElementById('new-scheduled-toggle');
+    const scheduledFormWrap = document.getElementById('scheduled-form-wrap');
+    const newPartToggle = document.getElementById('new-part-toggle');
+    const partFormWrap = document.getElementById('part-form-wrap');
+
+    const bindSectionToggle = (button, panel, openLabel, closedLabel) => {
+      button.addEventListener('click', () => {
+        const isHidden = panel.hidden;
+        panel.hidden = !isHidden;
+        button.textContent = isHidden ? openLabel : closedLabel;
+        button.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
+      });
+    };
+
+    bindSectionToggle(editVehicleToggle, vehicleEditForm, 'Hide Edit Fields', 'Edit Vehicle');
+    bindSectionToggle(newServiceToggle, serviceRecordFormWrap, 'Hide Service Form', 'New Service Record');
+    bindSectionToggle(newScheduledToggle, scheduledFormWrap, 'Hide Maintenance Form', 'New Maintenance Item');
+    bindSectionToggle(newPartToggle, partFormWrap, 'Hide Part Form', 'New Part');
+
+    document.querySelectorAll('.tab-button').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        const tabName = e.target.dataset.tab;
+        document.querySelectorAll('.tab-button').forEach((b) => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach((tc) => tc.classList.remove('active'));
+        e.target.classList.add('active');
+        document.getElementById(tabName).classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>

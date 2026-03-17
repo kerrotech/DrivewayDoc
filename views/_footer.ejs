@@ -1,0 +1,41 @@
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <div class="footer-logo">DrivewayDoc</div>
+      <p>Professional vehicle &amp; fleet service tracking.<br>Keep every record, never miss a service.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Navigation</h4>
+      <ul>
+        <li><a href="/">Dashboard</a></li>
+        <li><a href="/?tab=vehicles">Vehicles</a></li>
+        <li><a href="/?tab=customers">Customers</a></li>
+        <li><a href="/vehicles/new">Add Vehicle</a></li>
+        <li><a href="/customers/new">Add Customer</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <ul>
+        <li><a href="mailto:support@drivewaydoc.app">Contact Us</a></li>
+        <li><a href="mailto:feedback@drivewaydoc.app">Send Feedback</a></li>
+        <li><a href="/?faq=1">FAQ</a></li>
+        <li><a href="/?guide=1">How It Works</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Account</h4>
+      <ul>
+        <% if (user) { %>
+        <li><a href="/logout">Sign Out</a></li>
+        <% } else { %>
+        <li><a href="/login">Sign In</a></li>
+        <% } %>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 DrivewayDoc. All rights reserved.</span>
+    <span>Built for professional fleet management.</span>
+  </div>
+</footer>

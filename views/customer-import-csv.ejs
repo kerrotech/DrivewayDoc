@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DrivewayDoc | Import Customers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <%- include('_nav') %>
+
+  <header class="page-header">
+    <div class="page-header-inner">
+      <div class="breadcrumb">
+        <a href="/">Dashboard</a>
+        <span class="breadcrumb-sep">/</span>
+        <a href="/?tab=customers">Customers</a>
+        <span class="breadcrumb-sep">/</span>
+        <span>Import via CSV</span>
+      </div>
+      <div class="page-title-row">
+        <div>
+          <h1>Add Customers via CSV</h1>
+          <p class="subtitle">Column order: FirstName, LastName, Phone, Email</p>
+        </div>
+        <div class="page-actions">
+          <a class="button button-ghost" href="/">← Back</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="page-main">
+
+    <section class="panel">
+      <% if (error) { %>
+        <div class="empty" style="border-color: var(--danger); color: #ffd0d0; margin-bottom: 0.8rem;"><p><%= error %></p></div>
+      <% } %>
+      <% if (imported > 0) { %>
+        <div class="empty" style="border-color: rgba(43, 201, 163, 0.6); color: #baf6e8; margin-bottom: 0.8rem;"><p>Imported <%= imported %> customer(s).</p></div>
+      <% } %>
+
+      <form action="/customers/import-csv" method="POST" enctype="multipart/form-data">
+        <label>
+          CSV File
+          <input name="csvFile" type="file" accept=".csv,text/csv,.txt" required />
+        </label>
+        <p class="meta" style="margin-top: 0.5rem;">Expected order: FirstName, LastName, Phone, Email</p>
+        <div class="form-actions" style="margin-top: 0.8rem;">
+          <button class="button" type="submit">Import Customers</button>
+        </div>
+      </form>
+    </section>
+  </main>
+  <%- include('_footer') %>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DrivewayDoc | <%= customer.firstName %> <%= customer.lastName %></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <%- include('_nav') %>
+
+  <header class="page-header">
+    <div class="page-header-inner">
+      <div class="breadcrumb">
+        <a href="/">Dashboard</a>
+        <span class="breadcrumb-sep">/</span>
+        <a href="/?tab=customers">Customers</a>
+        <span class="breadcrumb-sep">/</span>
+        <span><%= customer.firstName %> <%= customer.lastName %></span>
+      </div>
+      <div class="page-title-row">
+        <div>
+          <h1><%= customer.firstName %> <%= customer.lastName %></h1>
+          <p class="subtitle"><%= customer.phone || "No phone" %> &nbsp;&middot;&nbsp; <%= customer.email || "No email" %></p>
+        </div>
+        <div class="page-actions">
+          <a class="button button-ghost" href="/customers/<%= customer.id %>/edit">Edit Customer</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="page-main">
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Vehicles for This Customer</h2>
+        <span><%= vehicles.length %> assigned</span>
+      </div>
+
+      <% if (!vehicles.length) { %>
+        <div class="empty">
+          <p>No vehicles assigned yet for this customer.</p>
+        </div>
+      <% } else { %>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Vehicle</th>
+                <th>Plate</th>
+                <th>VIN</th>
+                <th>Mileage</th>
+                <th>Records</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <% vehicles.forEach((vehicle) => { %>
+                <tr>
+                  <td>
+                    <strong><%= vehicle.year %> <%= vehicle.make %> <%= vehicle.model %></strong>
+                    <% if (vehicle.nickname) { %>
+                      <div class="meta"><%= vehicle.nickname %></div>
+                    <% } %>
+                  </td>
+                  <td><%= vehicle.plate || "-" %></td>
+                  <td class="mono"><%= vehicle.vin || "-" %></td>
+                  <td><%= Number(vehicle.currentMileage || 0).toLocaleString() %></td>
+                  <td><%= Array.isArray(vehicle.services) ? vehicle.services.length : 0 %></td>
+                  <td><a class="button button-link" href="/vehicles/<%= vehicle.id %>">Open</a></td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </section>
+  </main>
+  <%- include('_footer') %>
+</body>
+</html>

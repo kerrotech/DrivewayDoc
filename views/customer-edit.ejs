@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DrivewayDoc | Edit <%= customer.firstName %> <%= customer.lastName %></title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <%- include('_nav') %>
+
+  <header class="page-header">
+    <div class="page-header-inner">
+      <div class="breadcrumb">
+        <a href="/">Dashboard</a>
+        <span class="breadcrumb-sep">/</span>
+        <a href="/?tab=customers">Customers</a>
+        <span class="breadcrumb-sep">/</span>
+        <a href="/customers/<%= customer.id %>"><%= customer.firstName %> <%= customer.lastName %></a>
+        <span class="breadcrumb-sep">/</span>
+        <span>Edit</span>
+      </div>
+      <div class="page-title-row">
+        <div>
+          <h1>Edit <%= customer.firstName %> <%= customer.lastName %></h1>
+        </div>
+        <div class="page-actions">
+          <a class="button button-ghost" href="/customers/<%= customer.id %>">← Back to Profile</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="page-main">
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>Customer Information</h2>
+      </div>
+      <form class="form-grid" action="/customers/<%= customer.id %>/update" method="POST">
+        <label>First Name *<input name="firstName" value="<%= customer.firstName %>" required /></label>
+        <label>Last Name *<input name="lastName" value="<%= customer.lastName %>" required /></label>
+        <label>Phone<input name="phone" value="<%= customer.phone || '' %>" /></label>
+        <label>Email<input name="email" type="email" value="<%= customer.email || '' %>" /></label>
+        <div class="form-actions"><button class="button" type="submit">Update Customer</button></div>
+      </form>
+    </section>
+  </main>
+  <%- include('_footer') %>
+</body>
+</html>
