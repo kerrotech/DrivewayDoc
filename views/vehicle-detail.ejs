@@ -29,6 +29,7 @@
           </p>
         </div>
         <div class="page-actions">
+          <a class="button button-ghost" href="/vehicles/<%= vehicle.id %>/report" target="_blank">Generate Report</a>
           <form action="/vehicles/<%= vehicle.id %>/delete" method="POST" onsubmit="return confirm('Delete this vehicle and all service records?')">
             <button class="button button-danger" type="submit">Delete Vehicle</button>
           </form>

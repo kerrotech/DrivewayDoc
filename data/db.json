@@ -132,11 +132,24 @@
       "currentHours": 0,
       "customerId": "",
       "nickname": "",
-      "services": [],
+      "services": [
+        {
+          "id": "5bbd17f0-be02-45a9-9d0b-22b335e4c4c5",
+          "date": "2026-01-02",
+          "serviceType": "Oil & Filter Change",
+          "serviceCategory": "Generic Service",
+          "description": "",
+          "mileage": 12453,
+          "hours": null,
+          "cost": 38,
+          "notes": "",
+          "createdAt": "2026-03-18T13:39:18.908Z"
+        }
+      ],
       "parts": [],
       "scheduledMaintenance": [],
       "createdAt": "2026-03-17T18:14:40.309Z",
-      "updatedAt": "2026-03-17T18:14:40.309Z",
+      "updatedAt": "2026-03-18T13:39:18.908Z",
       "isMyVehicle": true,
       "vehicleType": "Vehicle",
       "vehicleTypeOther": ""
@@ -222,7 +235,7 @@
       "parts": [],
       "scheduledMaintenance": [],
       "createdAt": "2026-03-17T18:14:40.312Z",
-      "updatedAt": "2026-03-17T19:21:22.593Z",
+      "updatedAt": "2026-03-18T13:02:43.226Z",
       "isMyVehicle": true,
       "vehicleType": "Vehicle",
       "vehicleTypeOther": ""
@@ -257,14 +270,27 @@
       "plate": "N/A",
       "vin": "UNK",
       "currentMileage": 0,
-      "currentHours": 0,
+      "currentHours": 1775,
       "customerId": "",
       "nickname": "",
-      "services": [],
+      "services": [
+        {
+          "id": "3e20784b-7f90-48df-9b30-0734ac22e68b",
+          "date": "2026-03-13",
+          "serviceType": "Joints Greased",
+          "serviceCategory": "Generic Service",
+          "description": "",
+          "mileage": null,
+          "hours": 1775,
+          "cost": 0,
+          "notes": "",
+          "createdAt": "2026-03-18T13:28:04.392Z"
+        }
+      ],
       "parts": [],
       "scheduledMaintenance": [],
       "createdAt": "2026-03-17T18:14:40.314Z",
-      "updatedAt": "2026-03-17T19:21:44.786Z",
+      "updatedAt": "2026-03-18T13:28:04.392Z",
       "isMyVehicle": true,
       "vehicleType": "Tractor",
       "vehicleTypeOther": ""
@@ -362,7 +388,7 @@
       "make": "Echo",
       "model": "PB-9010-H/T",
       "year": "2023",
-      "plate": "",
+      "plate": "N/A",
       "vin": "P53315032078",
       "currentMileage": 0,
       "currentHours": 0,
@@ -370,7 +396,9 @@
       "nickname": "",
       "services": [],
       "createdAt": "2026-03-17T19:24:43.675Z",
-      "updatedAt": "2026-03-17T19:24:43.675Z"
+      "updatedAt": "2026-03-17T19:27:30.070Z",
+      "parts": [],
+      "scheduledMaintenance": []
     }
   ],
   "customers": [
